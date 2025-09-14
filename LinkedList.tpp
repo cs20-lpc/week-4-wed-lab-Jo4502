@@ -57,6 +57,27 @@ void LinkedList<T>::clear() {
 template <typename T>
 void LinkedList<T>::copy(const LinkedList<T>& copyObj) {
     // TODO
+
+    head = nullptr;              //making sure list is empty
+    this->length = 0;
+
+    if (copyObj.head == nullptr) {
+        return;                      // If the list we are copying from has no nodes, just return
+    }
+
+    head = new Node(copyObj.head->value);       // Create a new node for 1st of this list and increment 1 = lenght 
+    this->length++;
+
+    Node* old = copyObj.head->next;
+    Node* currNew = head;
+
+    while (old != nullptr) {                // loop until the end of list
+
+        currNew->next = new Node(old->value);           // make a new node with same as an old node
+        currNew = currNew->next;                        // move the new pointer forward to the new node
+        old = old->next;
+        this->length++;                                 // increase lenght b/c new node
+    }
 }
 
 template <typename T>
@@ -82,6 +103,24 @@ int LinkedList<T>::getLength() const {
 template <typename T>
 void LinkedList<T>::insert(int position, const T& elem) {
     // TODO
+    if (position < 0 || position > this->length) {
+        throw string("insert = error");
+    }
+
+    if (position == 0) {                                             // make one at the front of the list
+        Node* n = new Node(elem, head);
+        head = n;
+    }
+    else {                      //start from the head
+        Node* curr = head;
+
+        for (int i = 0; i < position - 1; i++) {                    // stop one before the one we are inserting
+            curr = curr->next;
+        }
+
+        Node* n = new Node(elem, curr->next);                       // make a node that points to the next one so the one we need
+        curr->next = n;
+    }
 }
 
 template <typename T>
@@ -92,6 +131,27 @@ bool LinkedList<T>::isEmpty() const {
 template <typename T>
 void LinkedList<T>::remove(int position) {
     // TODO
+    if (position < 0 || position >= this->length) {
+        throw string("remove = error"); 
+    }
+    Node* Delete = nullptr;                 // make a pointer for the one being removed
+
+    if (position == 0) {
+        Delete = head;                // mark the head to be removed
+        head = head->next;              // move head to the next node
+    }
+    else {
+        Node* curr = head;              // start moving from head
+
+        for (int i = 0; i < position - 1; i++) {        // stop one before the one being deleted
+            curr = curr->next;
+        }
+
+        Delete = curr->next;              // the one being deleted is the next one
+        curr->next = Delete->next;      
+    }
+    delete Delete;                  // free memeory
+    this->length--;                 // decreaselenght since we deleted one
 }
 
 template <typename T>
